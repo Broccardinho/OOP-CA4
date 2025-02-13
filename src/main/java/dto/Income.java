@@ -1,2 +1,4 @@
-package dto;public class Income {
+package dto;
+
+public class Income {
 }

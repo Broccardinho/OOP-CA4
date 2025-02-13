@@ -1,2 +1,4 @@
-package dto;public class Expense {
+package dto;
+
+public class Expense {
 }

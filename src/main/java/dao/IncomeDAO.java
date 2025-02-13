@@ -1,2 +1,4 @@
-package dao;public class IncomeDAO {
+package dao;
+
+public class IncomeDAO {
 }
