@@ -13,7 +13,7 @@ public class ExpenseDAO {
         String query = "SELECT * FROM expense";
 
         try(Connection connection = databaseConnection.getConnection();
-            PreparedStatement prepState = connection.prepareStatement(query())){
+            PreparedStatement prepState = connection.prepareStatement(query)){
             ResultSet resSet = prepState.executeQuery();
 
             while(resSet.next()){
