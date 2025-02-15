@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IncomeDAO {
-    public List<Income> getIncomes(int id){
+    public List<Income> getAllIncomes(){
         List<Income> incomes = new ArrayList<>();
         String query = "SELECT * FROM income";
 
@@ -29,14 +29,14 @@ public class IncomeDAO {
     }
 
     public void addIncome(String title, double amount, Date dateEarned){
-        String query = "INSERT INTO income (title, amount, dateEarned) VALUES (?,?,?,?)";
+        String query = "INSERT INTO income (title, amount, dateEarned) VALUES (?,?,?)";
 
         try (Connection connection = databaseConnection.getConnection();
              PreparedStatement prepState = connection.prepareStatement(query)) {
 
             prepState.setString(1, title);
             prepState.setDouble(2, amount);
-            prepState.setDate(3, new java.sql.Date(dateEarned.getTime()));
+            prepState.setDate(3, dateEarned);
 
             prepState.executeUpdate();
         }catch (SQLException e){
