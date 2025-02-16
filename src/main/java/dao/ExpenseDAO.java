@@ -45,14 +45,40 @@ public class ExpenseDAO {
             e.printStackTrace();
         }
     }
-    public void deleteExpense(int expenseID){
+    public boolean deleteExpense(int expenseID){
         String query = "DELETE FROM expenses WHERE expenseID = ?";
 
         try(Connection connection = databaseConnection.getConnection();
         PreparedStatement prepState = connection.prepareStatement(query)){
+
+
             prepState.setInt(1, expenseID);
-            prepState.executeUpdate();
+            int rowsAffected = prepState.executeUpdate();
+            return rowsAffected > 0;
     }catch (SQLException e){
         e.printStackTrace();}
+        return false;
+    }
+
+    public List<Expense> getMonthlyExpenses(String month){
+        List<Expense> expenses = new ArrayList<>();
+        String query = "SELECT * FROM expenses WHERE DATE_FORMAT(dateIncurred, '%Y-%m') = ?";
+
+        try(Connection connection = databaseConnection.getConnection();
+            PreparedStatement prepState = connection.prepareStatement(query)){
+            prepState.setString(1, month);
+            ResultSet resSet = prepState.executeQuery();
+            while (resSet.next()){
+                int id = resSet.getInt("expenseID");
+                String description = resSet.getString("title");
+                String category = resSet.getString("category");
+                double amount = resSet.getDouble("amount");
+                Date date = resSet.getDate("dateIncurred");
+                expenses.add(new Expense(id, description, category, amount, date));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return expenses;
     }
 }

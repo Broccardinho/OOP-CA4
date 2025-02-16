@@ -44,16 +44,40 @@ public class IncomeDAO {
         }
     }
 
-    public void deleteIncome(int incomeID){
+    public boolean deleteIncome(int incomeID){
         String query = "DELETE FROM income WHERE incomeID = ?";
 
         try (Connection connection = databaseConnection.getConnection();
              PreparedStatement prepState = connection.prepareStatement(query)) {
 
             prepState.setInt(1, incomeID);
-            prepState.executeUpdate();
+            int rowsAffected = prepState.executeUpdate();
+            return rowsAffected > 0;
         }catch (SQLException e){
             e.printStackTrace();
         }
+        return false;
+    }
+
+    public List<Income> getMonthlyIncomes(String month){
+        List<Income> incomes = new ArrayList<>();
+        String query = "SELECT * FROM income WHERE DATE_FORMAT(dateEarned, '%Y-%m-%d') = ?";
+
+        try(Connection conn = databaseConnection.getConnection();
+                PreparedStatement prepState = conn.prepareStatement(query)){
+
+            prepState.setString(1, month);
+            ResultSet resSet = prepState.executeQuery();
+            while(resSet.next()){
+                int id = resSet.getInt("incomeID");
+                String source = resSet.getString("title");
+                double amount = resSet.getDouble("amount");
+                Date date = resSet.getDate("dateEarned");
+                incomes.add(new Income(id, source, amount, date));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return incomes;
     }
 }
